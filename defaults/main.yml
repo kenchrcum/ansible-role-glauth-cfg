@@ -1,0 +1,60 @@
+---
+glauth_config_location: "/app/config/config.cfg"
+
+glauth_debug: no
+glauth_syslog: no
+glauth_watchconfig: no
+
+glauth_yubikeyclientid: no
+glauth_yubikeysecret: no
+
+glauth_backend_datastore: "config"
+glauth_backend_basedn: "dc=glauth,dc=com"
+glauth_backend_nameformat: no
+glauth_backend_groupformat: no
+glauth_backend_sshkeyattr: no
+
+glauth_ldap_enabled: no
+glauth_ldap_listen_ip: "0.0.0.0"
+glauth_ldap_listen_port: 3893
+
+glauth_ldaps_enabled: no
+glauth_ldaps_listen_ip: "0.0.0.0"
+glauth_ldaps_listen_port: 3894
+glauth_ldaps_cert: "/app/config/ssl/cert.pem"
+glauth_ldaps_key: "/app/config/ssl/key.pem"
+
+glauth_behavior_limit_fails: yes
+glauth_behavior_number_fails: 3
+glauth_behavior_period_fails: 10
+glauth_behavior_block_fails: 60
+glauth_behavior_prune_table_every: 600
+glauth_behavior_prune_older_than: 600
+
+glauth_api_enabled: yes
+glauth_api_tls: no
+glauth_api_listen_ip: "0.0.0.0"
+glauth_api_listen_port: 5555
+glauth_api_cert: "/app/config/ssl/cert.pem"
+glauth_api_key: "/app/config/ssl/key.pem"
+
+# Possible parameters in group are:
+## name (str, required), gidnumber (int, required), includegroups (list of gidnumbers)
+glauth_groups:
+  - name: "group"
+    gidnumber: 6001
+
+# Required parameters are: name, mail, uidnumber, primarygroup, passsha256
+# Additional parameters in user are:
+## otpsecret (str), yubikey (str)
+glauth_users:
+  - name: "johndoe"
+    first_name: "John"
+    last_name: "Doe"
+    mail: "a.b@c.de"
+    uidnumber: 5001
+    primary_group: 6001
+    login_shell: "/bin/bash"
+    home_dir: "/home/johndoe"
+    pass_sha256: "ecd71870d1963316a97e3ac3408c9835ad8cf0f3c1bc703527c30265534f75ae" #test123
+    ssh_keys: []

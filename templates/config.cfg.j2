@@ -1,0 +1,129 @@
+{% if glauth_debug %}
+debug = true
+{% else %}
+debug = false
+{% endif %}
+{% if glauth_syslog %}
+syslog = true
+{% else %}
+syslog = false
+{% endif %}
+{% if glauth_watchconfig %}
+watchconfig = true
+{% else %}
+watchconfig = false
+{% endif %}
+
+{% if glauth_yubikeyclientid %}
+yubikeyclientid = {{ yubikeyclientid }}
+{% else %}
+#yubikeyclientid =
+{% endif %}
+{% if glauth_yubikeysecret %}
+yubikeysecret = true
+{% else %}
+#yubikeysecret =
+{% endif %}
+
+[backend]
+  datastore = "{{ glauth_backend_datastore }}"
+  baseDN = "{{ glauth_backend_basedn }}"
+{% if glauth_backend_nameformat %}
+  nameformat = {{ glauth_backend_nameformat }}
+{% else %}
+  # nameformat = "uid"
+{% endif %}
+{% if glauth_backend_groupformat %}
+  groupformat = {{ glauth_backend_groupformat }}
+{% else %}
+  # groupformat = "cn"
+{% endif %}
+{% if glauth_backend_sshkeyattr %}
+  sshkeyattr = {{ glauth_backend_sshkeyattr }}
+{% else %}
+  # sshkeyattr = "ipaSshPubKey"
+{% endif %}
+
+[ldap]
+{% if glauth_ldap_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  listen = "{{ glauth_ldap_listen_ip }}:{{ glauth_ldap_listen_port }}"
+
+[ldaps]
+{% if glauth_ldaps_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  listen = "{{ glauth_ldaps_listen_ip }}:{{ glauth_ldaps_listen_port }}"
+  cert = "{{ glauth_ldaps_cert }}"
+  key = "{{ glauth_ldaps_key }}"
+
+[behaviors]
+{% if glauth_behavior_limit_fails %}
+  LimitFailedBinds = true
+{% else %}
+  LimitFailedBinds = false
+{% endif %}
+  NumberOfFailedBinds = {{ glauth_behavior_number_fails }}
+  PeriodOfFailedBinds = {{ glauth_behavior_period_fails }}
+  BlockFailedBindsFor = {{ glauth_behavior_block_fails }}
+  PruneSourceTableEvery = {{ glauth_behavior_prune_table_every }}
+  PruneSourcesOlderThan = {{ glauth_behavior_prune_older_than }}
+
+[api]
+{% if glauth_api_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+{% if glauth_api_tls %}
+  tls = true
+{% else %}
+  tls = false
+{% endif %}
+  listen = "{{ glauth_api_listen_ip }}:{{ glauth_api_listen_port }}"
+  cert = "cert.pem"
+  key = "key.pem"
+
+{% for g in glauth_groups %}
+[[groups]]
+  name = "{{ g.name }}"
+  gidnumber = {{ g.gidnumber }}
+{% if g.includegroups is defined %}
+  includegroups = {{ g.includegroups }}
+{% endif %}
+{% endfor %}
+
+{% for u in glauth_users %}
+[[users]]
+  name = "{{ u.name }}"
+  mail = "{{ u.mail }}"
+  uidnumber = {{ u.uidnumber }}
+  primarygroup = {{ u.primary_group }}
+  passsha256 = "{{ u.pass_sha256 }}"
+{% if u.first_name is defined %}
+  givenname = "{{ u.first_name }}"
+{% endif %}
+{% if u.last_name is defined %}
+  sn = "{{ u.last_name }}"
+{% endif %}
+{% if u.login_shell is defined %}
+  loginShell = "{{ u.login_shell }}"
+{% endif %}
+{% if u.home_dir is defined %}
+  homeDir = "{{ u.home_dir }}"
+{% endif %}
+{% if u.ssh_keys is defined %}
+  sshkeys = {{ u.ssh_keys }}
+{% endif %}
+{% if u.otpsecret is defined %}
+  otpsecret = {{ u.otpsecret }}
+{% endif %}
+{% if u.yubikey is defined %}
+  yubikey = {{ u.yubikey }}
+{% endif %}
+{% endfor %}
